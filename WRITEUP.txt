@@ -1,0 +1,30 @@
+WRITE UP
+
+Findings:
+-All data centers had what appeared to be significant (negative) outliers.
+#All further findings are based off of results of the 3rd filtering pass except those referring to the graph of 'ALL' data centers together, in which case I will be using the 2nd filtering pass results (3rd pass filters too much). Times refer to the scale given on the provided graphs, ignoring the +1.4434.9
+-Data centers I and S exhibited similar overall trends; two U shapes on both sides of the value vs. time graphs, occuring at similar time intervals. Perhaps these dips and peaks coincide with nightime and daytime, respectively? Note that Data center A had a similarly shaped dip, but between times 8000 and 10000 (and perhaps at the start of data collection, though this is not illustrated in full and cannot be assumed) instead of between 10000 and 12000
+-In general, data center A behaved more irregularly than its peers, though I still expect that it follows a vaguely periodic waving motion like the others do. This irregularity is backed up by both the value and ROC graphs.
+-Data center I made up the vast majority of net positive rtb.requests, even before filtering.
+-Data center I and S both experienced what appeared to be erratic behavior between their two "dips," though they appear to occur at slightly different times; data center I's values fall sharpy at around time=70000 while data center S exhibits an even sharper - though shorter lived - drop and subsequent dead zone at about time=75000. See also data center S's drop at 57500, and data center I's drop shortly afterwards. Perhaps these pairs of occurences are related?
+
+-The aforementioned trends become more pronounced when viewing the graphs for all data centers combined. The rises and dips for data centers I and S are closely related; meanwhile, data center A's rises and dips seem to coincide with the others' dips and rises, respectively.
+-The middle section is of particular interest (between about 57500 and 80000). It appears that a disruption of some kind has affected the data centers, though I appears to be the hardest hit. I would have forecasted a smooth hill in that section, but instead we get a drop and the erratic peaking that follows.
+-It almost looks as if the number of entries is increasing to compensate for a decrease in data center I's maximum capacity. That, or the maximum capacity is decreasing (or perhaps more accurately, being spread out) to throttle or handle the increasing number of entries. In any case, after the darkened section has passed, the graph recovers and resumes what appears to be normal operation.
+-Notably, data center A seems to be affected by the increase in entry density at around the same time that I does, though it's graph does not react adversely. Conversely, the number of rtb.requests per entry, in general, goes up during this period.
+-It is during this same time that data center S encounters the aforementioned dead zone, where no requests come in (or are able to come in) for a notable (though short in context) period of time. Note that data center S does not encounter the "dark section" that the others do, though the number of rtb.requests does, of course, go up.
+
+-As a result, I would make the guess that the data servers all experienced a sharp rise in the number of requests, and all reacted differently. Server A was able to handle the increase, and did not encounter any apparent difficulties. Server S, meanwhile, completely died during this period of increased load (which, again, was not as packed as it was for the other servers). Server I, meanwhile, is able to keep going, but experiences a decrease in the maximum value of rtb.requests that it can handle from each entry.
+
+
+Challenges:
+-It was difficult to figure out which interesting trend changes I could/should detect. In the end, I settled for graphing the data and ROC of said data, which I hope is sufficient for this task.
+-I was confused at first why there were negative numbers, since I thought 'requests' implied the number of client requests the data servers were getting. I soon realized that this probably implied buying and selling, and that my initial thoughts were wrong, or at least not entirely right.
+-There were some very large negative numbers inserted in the data. I wasn't sure if there were outliers, so I presented the data with and without these outliers.
+-I admittedly made quite a few poor design choices that I didn't realize were poor design choices until very late in the process. In particular, I didn't realize that I needed to sanitize (see the sanitize function) the entries for the 'ALL' data_center object until well after I had coded everything around tuples. But tuples can't be changed, so I ended up writing very ugly code to remove time-duplicate entries. All design blunders should be documented in my comments.
+-Nothing to check my results against. Testing is open loop!
+
+Information I wish I could've had:
+-While not strictly necessary, a defnitive unit of time would have been nice (e.g. seconds, milliseconds) - my guess was seconds, meaning the data given would span a period of 37.6 hours.
+-An explanation of what exactly 'rtb.requests' was (real time bidding was my guess, though that actually didn't help me understand the data that much more) referring to would have made drawing concise conclusions much easier; as it was, I ended up doing a lot of what was, at the end of the day, "hand waving." The terms I used in the findings section were airy, at best.
+-I would have liked to know if the outliers were in fact discardable, or if the massive negative values actually meant something - and if so, what!
